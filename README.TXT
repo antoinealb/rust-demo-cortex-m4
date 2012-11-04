@@ -42,4 +42,6 @@ I hope this can be useful for someone.
 
 Thanks a lot to the following people:
 
-http://fun-tech.se/stm32/index.php - Without this man this would not have existed
+http://fun-tech.se/stm32/index.php - 					Without this man this would not have existed
+http://www.bravegnu.org/gnu-eprog/c-startup.html -		I found this quite explanatory too!
+

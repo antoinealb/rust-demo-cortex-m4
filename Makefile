@@ -29,7 +29,7 @@
 # Description:	Sample makefile.
 
 #==============================================================================
-#              Cross compiling toolchain specifications
+#           Cross compiling toolchain / tools specifications
 #==============================================================================
 
 # Prefix for the arm-eabi-none toolchain.
@@ -52,7 +52,7 @@ CP      = ${PREFIX_ARM}-objcopy
 OD      = ${PREFIX_ARM}-objdump
 
 # Option arguments for C compiler.
-CFLAGS=-mthumb ${CPU} ${FPU} -O0 -ffunction-sections -fdata-sections -MD -std=c99 -Wall -pedantic -DPART_${PART} -c
+CFLAGS=-mthumb ${CPU} ${FPU} -O0 -ffunction-sections -fdata-sections -MD -std=c99 -Wall -pedantic -DPART_${PART} -c -g
 
 # Flags for LD
 LFLAGS  = --gc-sections
@@ -70,6 +70,11 @@ LIB_GCC_PATH=${shell ${CC} ${CFLAGS} -print-libgcc-file-name}
 LIBC_PATH=${shell ${CC} ${CFLAGS} -print-file-name=libc.a}
 LIBM_PATH=${shell ${CC} ${CFLAGS} -print-file-name=libm.a}
 
+# Uploader tool path.
+# Set a relative or absolute path to the upload tool program.
+FLASHER=../../../../lm4tools/lm4flash/lm4flash
+FLASHER_FLAGS=-v
+
 #==============================================================================
 #                         Project properties
 #==============================================================================
@@ -85,7 +90,7 @@ LINKER_FILE = LM4F.ld
 #                      Rules to make the target
 #==============================================================================
 
-
+#make all rule
 all: ${PROJECT_NAME}
 
 ${PROJECT_NAME}: ${PROJECT_NAME}.axf
@@ -105,6 +110,12 @@ ${PROJECT_NAME}.o: ${PROJECT_NAME}.c
 ${STARTUP_FILE}.o: ${STARTUP_FILE}.c
 	@ echo "Compile startup ..."
 	$(CC) $(CFLAGS) ${STARTUP_FILE}.c -o ${STARTUP_FILE}.o
-	
+
+# make clean rule
 clean:
-	rm *.bin *.o *.d *.axf
+	rm *.bin *.o *.d *.axf *.lst
+
+# Rule to load the project to the board
+# I added a sudo because it's needed without a rule.
+load:
+	sudo ${FLASHER} ${PROJECT_NAME}.bin ${FLASHER_FLAGS}
