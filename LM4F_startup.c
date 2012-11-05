@@ -62,13 +62,16 @@ extern unsigned long _end_data;
 extern unsigned long _start_bss;
 extern unsigned long _end_bss;
 
+static unsigned long pulStack[64];
+
 // NVIC ISR table
 // the funny looking void(* myvectors[])(void) basically it's a way to make cc accept an array of function pointers.
 __attribute__ ((section(".nvic_table")))
 void(* myvectors[])(void) = {
 	// This are the fixed priority interrupts and the stack pointer loaded at startup at R13 (SP).
 	//												VECTOR N (Check Datasheet)
-    (void (*)(void))	&_STACK_TOP, 	
+    //(void (*)(void))	&_STACK_TOP, 	
+    (void (*)(void))((unsigned long)pulStack + sizeof(pulStack)),
     						// stack pointer should be 
 							// placed here at startup.			0
     rst_handler,			// code entry point					1
@@ -246,22 +249,26 @@ void rst_handler(void){
 	// Copy the .data section pointers to ram from flash.
 	// Look at LD manual (Optional Section Attributes).
 	
-	// source and destination
-	unsigned long *src = &_end_text;
-	unsigned long *dest = &_start_data;
+	// source and destination pointers
+	unsigned long *src, *dest;
 	
-	// until the destination it's full.
-	while(dest < _end_data){
-		// assign the data to the destination and increment it afterwards
-		*dest++ = *src++;
-	}
-	// Now set the data referenced by .bss segment to 0.
-	for(dest = _start_bss; dest < _end_bss; dest++){
+	//set the the .data variables to ram from flash
+    src = &_end_text;
+    dest = &_start_data;
+    while(dest < &_end_data)
+    {
+        *dest++ = *src++;
+    }
+    // now set the .bss segment to 0!
+    dest = _start_bss;
+	while(dest < _end_bss){
 		*dest = 0;
+		*dest++;
 	}
 	
 	// after setting copying .data to ram and "zero-ing" .bss we are good
 	// to start the main() method!
+	// There you go!
 	main();
 }
 

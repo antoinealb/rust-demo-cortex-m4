@@ -42,6 +42,19 @@ I hope this can be useful for someone.
 
 Thanks a lot to the following people:
 
-http://fun-tech.se/stm32/index.php - 					Without this man this would not have existed
-http://www.bravegnu.org/gnu-eprog/c-startup.html -		I found this quite explanatory too!
+https://github.com/Wollw/stellaris-launchpad-template-gcc   Thanks to this guy
+															who did a great 
+															cleaning job in 
+															the Makefile
+															
+https://github.com/utzig/lm4tools					-		I use this project
+															to load the program
+															to the target!
+															
+http://fun-tech.se/stm32/index.php 					- 		Without this man 
+															this would not 
+															have existed!
+															
+http://www.bravegnu.org/gnu-eprog/c-startup.html 	-		I found this quite
+															explanatory too!
 

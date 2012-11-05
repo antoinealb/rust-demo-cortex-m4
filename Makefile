@@ -42,6 +42,9 @@ PART=LM4F120H5QR
 CPU=-mcpu=cortex-m4
 FPU=-mfpu=fpv4-sp-d16 -mfloat-abi=softfp
 
+# Stellarisware path
+STELLARISWARE_PATH=~/stellaris/stellaris/
+
 # Program name definition for ARM GNU C compiler.
 CC      = ${PREFIX_ARM}-gcc
 # Program name definition for ARM GNU Linker.
@@ -52,7 +55,9 @@ CP      = ${PREFIX_ARM}-objcopy
 OD      = ${PREFIX_ARM}-objdump
 
 # Option arguments for C compiler.
-CFLAGS=-mthumb ${CPU} ${FPU} -O0 -ffunction-sections -fdata-sections -MD -std=c99 -Wall -pedantic -DPART_${PART} -c -g
+CFLAGS=-mthumb ${CPU} ${FPU} -Os -ffunction-sections -fdata-sections -MD -std=c99 -Wall -pedantic -c -g
+# Library stuff passed as flags!
+CFLAGS+= -I ${STELLARISWARE_PATH} -DPART_$(PART) -c -DTARGET_IS_BLIZZARD_RA1
 
 # Flags for LD
 LFLAGS  = --gc-sections
@@ -72,8 +77,10 @@ LIBM_PATH=${shell ${CC} ${CFLAGS} -print-file-name=libm.a}
 
 # Uploader tool path.
 # Set a relative or absolute path to the upload tool program.
-FLASHER=../../../../lm4tools/lm4flash/lm4flash
-FLASHER_FLAGS=-v
+# I used this project: https://github.com/utzig/lm4tools
+FLASHER=~/stellaris/lm4tools/lm4flash/lm4flash
+# Flags for the uploader program.
+FLASHER_FLAGS=
 
 #==============================================================================
 #                         Project properties
@@ -86,30 +93,36 @@ STARTUP_FILE = LM4F_startup
 # Linker file name
 LINKER_FILE = LM4F.ld
 
+SRC = $(wildcard *.c)
+OBJS = $(SRC:.c=.o)
+
 #==============================================================================
 #                      Rules to make the target
 #==============================================================================
 
 #make all rule
-all: ${PROJECT_NAME}
+all: $(OBJS) ${PROJECT_NAME}.axf ${PROJECT_NAME}
+
+%.o: %.c
+	@echo
+	@echo Compiling $<...
+	$(CC) -c $(CFLAGS) ${<} -o ${@}
+
+${PROJECT_NAME}.axf: $(OBJS)
+	@echo
+	@echo Making driverlib
+	$(MAKE) -C ${STELLARISWARE_PATH}driverlib/
+	@echo
+	@echo Linking...
+	$(LD) -T $(LINKER_FILE) $(LFLAGS) -o ${PROJECT_NAME}.axf $(OBJS) ${STELLARISWARE_PATH}driverlib/gcc-cm4f/libdriver-cm4f.a $(LIBM_PATH) $(LIBC_PATH) $(LIB_GCC_PATH)
 
 ${PROJECT_NAME}: ${PROJECT_NAME}.axf
-	@ echo "Copy ..."
+	@echo
+	@echo Copying...
 	$(CP) $(CPFLAGS) ${PROJECT_NAME}.axf ${PROJECT_NAME}.bin
+	@echo
+	@echo Creating list file...
 	$(OD) $(ODFLAGS) ${PROJECT_NAME}.axf > ${PROJECT_NAME}.lst
-
-${PROJECT_NAME}.axf: ${PROJECT_NAME}.o ${STARTUP_FILE}.o
-	@ echo "Link ..."
-	#
-	${LD} ${LFLAGS} -o ${PROJECT_NAME}.axf -T ${LINKER_FILE} ${PROJECT_NAME}.o ${STARTUP_FILE}.o ${LIBM_PATH} ${LIBC_PATH}  ${LIB_GCC_PATH} --entry=rst_handler
-
-${PROJECT_NAME}.o: ${PROJECT_NAME}.c
-	@ echo "Compile main..."
-	$(CC) $(CFLAGS) ${PROJECT_NAME}.c -o ${PROJECT_NAME}.o
-
-${STARTUP_FILE}.o: ${STARTUP_FILE}.c
-	@ echo "Compile startup ..."
-	$(CC) $(CFLAGS) ${STARTUP_FILE}.c -o ${STARTUP_FILE}.o
 
 # make clean rule
 clean:

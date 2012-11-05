@@ -35,7 +35,6 @@
 * Memory definition:
 * FLASH:	start point 0x00,		lenght 0x40000.
 * SRAM:		start point 0x20000000	length 0x8000.
-* STACK:	start point 0x20008000	length 0x0
 */
 MEMORY
 {
@@ -49,10 +48,6 @@ MEMORY
 * .text 		- machine instructions.
 * .data 		- initialized data defined in the program.
 * .bss  		- un-initialized global and static variables (to be initialized to 0 before starting main).
-* .heap			- it's allocated at runtime with malloc().
-* .stack		- this section it's used to signal to the C startup code the end address of ram as it should
-*				  be for a c program, and I place it at the beginning of the NVIC table so it can be loaded
-*				  at reset.
 */
 SECTIONS
 {	
@@ -93,22 +88,7 @@ SECTIONS
         _end_bss = .;		/* End index for .bss segment */
     }>RAM
     
-    /* 
-    * .heap contains the heap section (memory allocated at runtime).
-    * Basically it's used by malloc() calls.
-    * Should go to ram after bss.
-    *
-    .heap : 
-    {
-    	_HEAP =.;
-    }>RAM
-*/    
-    /* 
-    * .stack it's used in the startup c code to know what to put in the first NVIC location. 
-    * (It's loaded at startup on R13, (stack pointer))
-    */
-	.stack 0x20008000: 
-    {
-    	_STACK_TOP = .;
-    }
+	/*
+	* The stack pointer it's better being set at runtime.
+	*/
 }
