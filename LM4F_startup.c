@@ -263,7 +263,8 @@ void rst_handler(void){
     dest = _start_bss;
 	while(dest < _end_bss){
 		*dest = 0;
-		*dest++;
+		//*dest++;
+		dest++;
 	}
 	
 	// after setting copying .data to ram and "zero-ing" .bss we are good

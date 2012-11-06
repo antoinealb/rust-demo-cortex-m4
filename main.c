@@ -69,7 +69,6 @@ int main(void) {
         //
         SysCtlDelay(2000000);
 
-        //
         // Turn on the LED
         //
         GPIOPinWrite(GPIO_PORTF_BASE, RED_LED|BLUE_LED|GREEN_LED, BLUE_LED);
@@ -79,7 +78,7 @@ int main(void) {
         //
         SysCtlDelay(2000000);
         
-                //
+
         // Turn on the LED
         //
         GPIOPinWrite(GPIO_PORTF_BASE, RED_LED|BLUE_LED|GREEN_LED, GREEN_LED);
