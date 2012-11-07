@@ -50,7 +50,7 @@ void hardfault_handler(void);
 //-----------------------------------------------------------------------------
 
 // defined by the linker it's the stack top variable (End of ram)
-extern unsigned long _STACK_TOP;
+extern unsigned long _stack_top;
 // defined by the liker, this are just start and end marker for each section.
 // .text (code)
 extern unsigned long _start_text;
@@ -62,16 +62,14 @@ extern unsigned long _end_data;
 extern unsigned long _start_bss;
 extern unsigned long _end_bss;
 
-static unsigned long pulStack[64];
-
 // NVIC ISR table
 // the funny looking void(* myvectors[])(void) basically it's a way to make cc accept an array of function pointers.
 __attribute__ ((section(".nvic_table")))
 void(* myvectors[])(void) = {
 	// This are the fixed priority interrupts and the stack pointer loaded at startup at R13 (SP).
 	//												VECTOR N (Check Datasheet)
-    //(void (*)(void))	&_STACK_TOP, 	
-    (void (*)(void))((unsigned long)pulStack + sizeof(pulStack)),
+	// here the compiler it's boring.. have to figure that out
+    (void (*)(void)) &_stack_top, 
     						// stack pointer should be 
 							// placed here at startup.			0
     rst_handler,			// code entry point					1
@@ -242,29 +240,30 @@ void(* myvectors[])(void) = {
 * The stack pointer should be set at the beginning with the NVIC table already.
 * Copy the .data segment from flash into ram.
 * 0 to the .bss segment 
-
-
 */
+	
 void rst_handler(void){	
 	// Copy the .data section pointers to ram from flash.
 	// Look at LD manual (Optional Section Attributes).
 	
 	// source and destination pointers
-	unsigned long *src, *dest;
+	unsigned long *src;
+	unsigned long *dest;
 	
-	//set the the .data variables to ram from flash
-    src = &_end_text;
-    dest = &_start_data;
+	//this should be good!
+	src = &_end_text;
+	dest = &_start_data;
+	
+	//this too
     while(dest < &_end_data)
     {
         *dest++ = *src++;
     }
+	
     // now set the .bss segment to 0!
-    dest = _start_bss;
-	while(dest < _end_bss){
-		*dest = 0;
-		//*dest++;
-		dest++;
+    dest = &_start_bss;
+	while(dest < &_end_bss){
+		*dest++ = 0;
 	}
 	
 	// after setting copying .data to ram and "zero-ing" .bss we are good

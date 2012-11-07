@@ -35,11 +35,13 @@
 * Memory definition:
 * FLASH:	start point 0x00,		lenght 0x40000.
 * SRAM:		start point 0x20000000	length 0x8000.
+* STACK:	start point 0x20007FFF	lenght 0x0.
 */
 MEMORY
 {
     FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 0x00040000
     RAM (rwx) : ORIGIN = 0x20000000, LENGTH = 0x00008000
+    STACK (rwx) : ORIGIN = 0x20007FFF , LENGTH = 0x00000000
 }
 
 /*
@@ -48,6 +50,7 @@ MEMORY
 * .text 		- machine instructions.
 * .data 		- initialized data defined in the program.
 * .bss  		- un-initialized global and static variables (to be initialized to 0 before starting main).
+* .stack		- just contains the pointer to the stack end at the right place.
 */
 SECTIONS
 {	
@@ -56,7 +59,7 @@ SECTIONS
 	*/
     .text : 
     {
-    	_start_text = .;	/* This is an index to the beginning of .text segment. */
+    	/*_start_text = .;	/* This is an index to the beginning of .text segment. */
     	KEEP(*(.nvic_table)) /* I should keep the NVIC ISR Table because it's needed by the processor to start. */
         *(.text.*)			/* This contains the code after the ISR table. */
         *(.rodata.*)    	/* Read only data.  */
@@ -68,13 +71,15 @@ SECTIONS
     * So I set the data segment in ram, but I specify the load address with the AT
     * keyword to set that right after the .text section.
     * (Look at the LD documentation. (Optional Section Attributes)) 
+    * Thanks https://github.com/utzig for the hints!
     */
-    .data : AT(ADDR(.text) + SIZEOF(.text))
+    .data : 
     {
     	_start_data = .;	/* An index to the beginning of .data segment. */
-        *(.data);			/* I should put there all my initialized data of my program. */
+        *(.data.*);			/* I should put there all my initialized data of my program. */
         _end_data = .;		/* And another index to the end of .data segment. */
-    }>RAM
+    }>RAM AT >FLASH
+    
 
 	/* 
 	* .bss contains the unitialized variables and must be set as 0x0 during runtime.
@@ -83,12 +88,17 @@ SECTIONS
     .bss : 
     {
     	_start_bss = .;		/* This is an index to the beginning of .bss segment. */
-        *(.bss)       		/* The un-initialized data should go there.  */
+        *(.bss.*)       	/* The un-initialized data should go there.  */
         *(COMMON)			/* All the other stuff should be put there */
         _end_bss = .;		/* End index for .bss segment */
     }>RAM
     
 	/*
-	* The stack pointer it's better being set at runtime.
+	* .stack contains nothing, but I use it to set the first vector item (SP R13).
 	*/
+	.stack : 
+	{
+		_stack_top = .; /* An index to the end of the stack */
+	}>STACK
+	
 }
