@@ -30,45 +30,41 @@
 * Description:	Main sample file.
 */
 
-#include <inc/hw_gpio.h>
-#include <inc/hw_memmap.h>
-#include <inc/hw_sysctl.h>
-#include <inc/hw_types.h>
-#include <driverlib/gpio.h>
-#include <driverlib/sysctl.h>
+#include "inc/hw_ints.h"
+#include "inc/hw_gpio.h"
+#include "inc/hw_memmap.h"
+#include "inc/hw_sysctl.h"
+#include "inc/hw_types.h"
+#include "driverlib/gpio.h"
+#include "driverlib/sysctl.h"
+#include "driverlib/interrupt.h"
+#include "driverlib/timer.h"
 
-#define RED_LED GPIO_PIN_1
-#define BLUE_LED GPIO_PIN_2
-#define GREEN_LED GPIO_PIN_3
+// Basically here I'm checking that everything works fine.
+volatile unsigned long count;
 
-//Basically here I'm checking that everything works fine.
+// An interrupt function.
+void Timer1A_ISR(void);
 
-// a global init var for data.
-int pins=2;
-// a global uninit var bss.
-int global_un;
-
+// main function.
 int main(void) {
-    SysCtlClockSet(SYSCTL_SYSDIV_4|SYSCTL_USE_PLL|SYSCTL_XTAL_16MHZ|SYSCTL_OSC_MAIN);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
-    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, RED_LED|BLUE_LED|GREEN_LED);
-    global_un=3;
-    // a local var for stack
-    int i=0;
+	SysCtlClockSet(SYSCTL_SYSDIV_2_5|SYSCTL_USE_PLL|SYSCTL_OSC_MAIN|SYSCTL_XTAL_16MHZ);
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER1);
+	TimerConfigure(TIMER1_BASE, TIMER_CFG_SPLIT_PAIR | TIMER_CFG_A_PERIODIC);
+	TimerControlStall(TIMER1_BASE, TIMER_A, true);
+	TimerLoadSet(TIMER1_BASE, TIMER_A, 2111);
+	TimerIntRegister(TIMER1_BASE, TIMER_A, Timer1A_ISR);
+	TimerIntEnable(TIMER1_BASE, TIMER_TIMA_TIMEOUT);
+	count=3;
+	TimerEnable(TIMER1_BASE, TIMER_A);
     while(1)
     {	
-    	// random led flashings and increments of variables.
-    	i=i++;
-    	global_un++;
-        GPIOPinWrite(GPIO_PORTF_BASE, RED_LED|BLUE_LED|GREEN_LED, pins);
-        SysCtlDelay(2000000);
-        GPIOPinWrite(GPIO_PORTF_BASE, RED_LED|BLUE_LED|GREEN_LED, 0x00);
-        SysCtlDelay(2000000);
-        if(pins==8){
-        	pins=2;
-        }else{
-        	global_un=0;
-        	pins*=2;
-        }
+		
     }
+}
+
+// The interrupt function definition.
+void Timer1A_ISR(void){
+	TimerIntClear(TIMER1_BASE, TIMER_TIMA_TIMEOUT);
+	count++;
 }

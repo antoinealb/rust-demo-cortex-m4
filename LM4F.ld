@@ -76,7 +76,8 @@ SECTIONS
     .data : 
     {
     	_start_data = .;	/* An index to the beginning of .data segment. */
-        *(.data.*);			/* I should put there all my initialized data of my program. */
+        *(vtable)			/* vtable should be the volatile data I guess*/
+        *(.data.*)			/* I should put there all my initialized data of my program. */
         _end_data = .;		/* And another index to the end of .data segment. */
     }>RAM AT >FLASH
     

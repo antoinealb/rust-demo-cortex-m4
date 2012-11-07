@@ -69,7 +69,7 @@ void(* myvectors[])(void) = {
 	// This are the fixed priority interrupts and the stack pointer loaded at startup at R13 (SP).
 	//												VECTOR N (Check Datasheet)
 	// here the compiler it's boring.. have to figure that out
-    (void (*)(void)) &_stack_top, 
+    (void (*)) &_stack_top, 
     						// stack pointer should be 
 							// placed here at startup.			0
     rst_handler,			// code entry point					1
