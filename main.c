@@ -42,6 +42,7 @@
 
 // Basically here I'm checking that everything works fine.
 volatile unsigned long count;
+long var_init = 2;
 
 // An interrupt function.
 void Timer1A_ISR(void);
@@ -59,7 +60,7 @@ int main(void) {
 	TimerEnable(TIMER1_BASE, TIMER_A);
     while(1)
     {	
-		
+		var_init++;
     }
 }
 
