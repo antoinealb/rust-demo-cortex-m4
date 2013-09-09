@@ -32,7 +32,7 @@
 
 This is a sample project to be used with stellaris LM4Fxxx TI microcontrollers.
 The main reason why I started doing this project is that Stellarisware 
-(C lybraries for LM4F microcontrollers by Texas Instruments 
+(C libraries for LM4F microcontrollers by Texas Instruments 
 <http://www.ti.com/tool/sw-ek-lm4f120xl>) has a free and royalty-free license,
 while the code examples are available with restrictive license that you can't
 use for your own projects.
