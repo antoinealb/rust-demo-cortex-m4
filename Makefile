@@ -78,7 +78,7 @@ LIBM_PATH=${shell ${CC} ${CFLAGS} -print-file-name=libm.a}
 # Uploader tool path.
 # Set a relative or absolute path to the upload tool program.
 # I used this project: https://github.com/utzig/lm4tools
-FLASHER=~/stellaris/lm4tools/lm4flash/lm4flash
+FLASHER=lm4flash
 # Flags for the uploader program.
 FLASHER_FLAGS=
 
