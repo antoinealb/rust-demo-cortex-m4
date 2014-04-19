@@ -35,7 +35,7 @@
 # Prefix for the arm-eabi-none toolchain.
 # I'm using codesourcery g++ lite compilers available here:
 # http://www.mentor.com/embedded-software/sourcery-tools/sourcery-codebench/editions/lite-edition/
-PREFIX_ARM = arm-none-eabi
+PREFIX_ARM = ~/sat/bin/arm-none-eabi
 
 # Microcontroller properties.
 PART=LM4F120H5QR
@@ -43,7 +43,7 @@ CPU=-mcpu=cortex-m4
 FPU=-mfpu=fpv4-sp-d16 -mfloat-abi=softfp
 
 # Stellarisware path
-STELLARISWARE_PATH=~/stellaris/stellaris/
+STELLARISWARE_PATH=../Tivaware
 
 # Program name definition for ARM GNU C compiler.
 CC      = ${PREFIX_ARM}-gcc
@@ -111,10 +111,10 @@ all: $(OBJS) ${PROJECT_NAME}.axf ${PROJECT_NAME}
 ${PROJECT_NAME}.axf: $(OBJS)
 	@echo
 	@echo Making driverlib
-	$(MAKE) -C ${STELLARISWARE_PATH}driverlib/
+	$(MAKE) -C ${STELLARISWARE_PATH}/driverlib/
 	@echo
 	@echo Linking...
-	$(LD) -T $(LINKER_FILE) $(LFLAGS) -o ${PROJECT_NAME}.axf $(OBJS) ${STELLARISWARE_PATH}driverlib/gcc-cm4f/libdriver-cm4f.a $(LIBM_PATH) $(LIBC_PATH) $(LIB_GCC_PATH)
+	$(LD) -T $(LINKER_FILE) $(LFLAGS) -o ${PROJECT_NAME}.axf $(OBJS) ${STELLARISWARE_PATH}/driverlib/gcc/libdriver.a $(LIBM_PATH) $(LIBC_PATH) $(LIB_GCC_PATH)
 
 ${PROJECT_NAME}: ${PROJECT_NAME}.axf
 	@echo
