@@ -1,0 +1,3 @@
+[submodule "tivaware"]
+	path = tivaware
+	url = http://vps-342.firstheberg.net/antoinealb/tivaware.git

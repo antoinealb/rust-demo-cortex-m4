@@ -43,7 +43,7 @@ CPU=-mcpu=cortex-m4
 FPU=-mfpu=fpv4-sp-d16 -mfloat-abi=softfp
 
 # Stellarisware path
-STELLARISWARE_PATH=../Tivaware
+STELLARISWARE_PATH=tivaware
 
 # Program name definition for ARM GNU C compiler.
 CC      = ${PREFIX_ARM}-gcc
