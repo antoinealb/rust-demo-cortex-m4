@@ -129,6 +129,5 @@ clean:
 	rm *.bin *.o *.d *.axf *.lst
 
 # Rule to load the project to the board
-# I added a sudo because it's needed without a rule.
 load:
-	sudo ${FLASHER} ${PROJECT_NAME}.bin ${FLASHER_FLAGS}
+	${FLASHER} ${PROJECT_NAME}.bin ${FLASHER_FLAGS}
