@@ -47,6 +47,8 @@ STELLARISWARE_PATH=tivaware
 
 # Program name definition for ARM GNU C compiler.
 CC      = ${PREFIX_ARM}-gcc
+# Program name definition for Rust compiler
+RUSTC   = rustc
 # Program name definition for ARM GNU Linker.
 LD      = ${PREFIX_ARM}-ld
 # Program name definition for ARM GNU Object copy.
@@ -58,6 +60,9 @@ OD      = ${PREFIX_ARM}-objdump
 CFLAGS=-mthumb ${CPU} ${FPU} -O0 -ffunction-sections -fdata-sections -MD -std=c99 -Wall -pedantic -c -g
 # Library stuff passed as flags!
 CFLAGS+= -I ${STELLARISWARE_PATH} -DPART_$(PART) -c -DTARGET_IS_BLIZZARD_RA1
+
+RUSTFLAGS = -C opt-level=2 -Z no-landing-pads
+RUSTFLAGS+= --target thumbv7em-none-eabi -g --emit obj -L libcore-thumbv7m
 
 # Flags for LD
 LFLAGS  = --gc-sections
@@ -94,7 +99,10 @@ STARTUP_FILE = LM4F_startup
 LINKER_FILE = LM4F.ld
 
 SRC = $(wildcard *.c)
+RUSTSRC = runtime.rs
+
 OBJS = $(SRC:.c=.o)
+OBJS += $(RUSTSRC:.rs=.o)
 
 #==============================================================================
 #                      Rules to make the target
@@ -107,6 +115,11 @@ all: $(OBJS) ${PROJECT_NAME}.axf ${PROJECT_NAME}
 	@echo
 	@echo Compiling $<...
 	$(CC) -c $(CFLAGS) ${<} -o ${@}
+
+%.o: %.rs
+	@echo
+	@echo Compiling $<...
+	$(RUSTC) $(RUSTFLAGS) -o ${@} ${<}
 
 ${PROJECT_NAME}.axf: $(OBJS)
 	@echo
