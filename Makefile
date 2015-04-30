@@ -98,8 +98,8 @@ STARTUP_FILE = LM4F_startup
 # Linker file name
 LINKER_FILE = LM4F.ld
 
-SRC = $(wildcard *.c)
-RUSTSRC = runtime.rs
+SRC = LM4F_startup.c
+RUSTSRC = main.rs
 
 OBJS = $(SRC:.c=.o)
 OBJS += $(RUSTSRC:.rs=.o)
@@ -110,6 +110,7 @@ OBJS += $(RUSTSRC:.rs=.o)
 
 #make all rule
 all: $(OBJS) ${PROJECT_NAME}.axf ${PROJECT_NAME}
+main.o: *.rs
 
 %.o: %.c
 	@echo
@@ -127,7 +128,7 @@ ${PROJECT_NAME}.axf: $(OBJS)
 	$(MAKE) -C ${STELLARISWARE_PATH}/driverlib/
 	@echo
 	@echo Linking...
-	$(LD) -T $(LINKER_FILE) $(LFLAGS) -o ${PROJECT_NAME}.axf $(OBJS) ${STELLARISWARE_PATH}/driverlib/gcc/libdriver.a $(LIBM_PATH) $(LIBC_PATH) $(LIB_GCC_PATH)
+	$(LD) -T $(LINKER_FILE) $(LFLAGS) -o ${PROJECT_NAME}.axf $(OBJS) ${STELLARISWARE_PATH}/driverlib/gcc/libdriver.a
 
 ${PROJECT_NAME}: ${PROJECT_NAME}.axf
 	@echo

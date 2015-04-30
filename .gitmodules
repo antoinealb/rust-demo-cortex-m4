@@ -4,3 +4,6 @@
 [submodule "rust"]
 	path = rust
 	url = https://github.com/rust-lang/rust
+[submodule "lm4tools"]
+	path = lm4tools
+	url = https://github.com/utzig/lm4tools/
