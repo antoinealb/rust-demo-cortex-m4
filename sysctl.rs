@@ -3,6 +3,7 @@
 
 extern crate core;
 
+
 //*****************************************************************************
 //
 // The following are values that can be passed to the
@@ -519,12 +520,20 @@ pub const SYSCTL_ALTCLK_LFIOSC    : u32 = 0x00000004;
 
 extern {
     fn SysCtlClockSet(config: u32);
+    fn SysCtlPeripheralEnable(peripheral: u32);
 }
 
 pub fn clock_set(config: u32)
 {
     unsafe {
         SysCtlClockSet(config);
+    }
+}
+
+pub fn peripheral_enable(peripheral: u32)
+{
+    unsafe {
+        SysCtlPeripheralEnable(peripheral);
     }
 }
 
@@ -536,7 +545,6 @@ pub fn clock_set(config: u32)
 //extern void SysCtlPeripheralPowerOn(uint32_t ui32Peripheral);
 //extern void SysCtlPeripheralPowerOff(uint32_t ui32Peripheral);
 //extern void SysCtlPeripheralReset(uint32_t ui32Peripheral);
-//extern void SysCtlPeripheralEnable(uint32_t ui32Peripheral);
 //extern void SysCtlPeripheralDisable(uint32_t ui32Peripheral);
 //extern void SysCtlPeripheralSleepEnable(uint32_t ui32Peripheral);
 //extern void SysCtlPeripheralSleepDisable(uint32_t ui32Peripheral);
