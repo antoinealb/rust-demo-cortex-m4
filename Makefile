@@ -35,7 +35,7 @@
 # Prefix for the arm-eabi-none toolchain.
 # I'm using codesourcery g++ lite compilers available here:
 # http://www.mentor.com/embedded-software/sourcery-tools/sourcery-codebench/editions/lite-edition/
-PREFIX_ARM = ~/sat/bin/arm-none-eabi
+PREFIX_ARM = arm-none-eabi
 
 # Microcontroller properties.
 PART=LM4F120H5QR
