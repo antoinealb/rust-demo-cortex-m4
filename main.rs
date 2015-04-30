@@ -11,6 +11,7 @@ mod runtime;
 mod sysctl;
 mod led_driver;
 mod gpio;
+mod systick;
 
 fn clock_init() -> () {
     let clock_config = sysctl::SYSCTL_SYSDIV_2_5 + sysctl::SYSCTL_USE_PLL +
@@ -18,11 +19,21 @@ fn clock_init() -> () {
     sysctl::clock_set(clock_config);
 }
 
+static mut tick_counter: u32 = 0;
+
+fn handler() -> () {
+}
+
 
 #[no_mangle] pub fn main()
 {
     clock_init();
     led_driver::led_init();
+    systick::init();
+
+    systick::set_period_us(10 * 1000);
+    systick::set_handler(handler);
+    systick::start();
 
     loop {
         let mut i = 0;
