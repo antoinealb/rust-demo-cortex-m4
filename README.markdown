@@ -1,5 +1,9 @@
-# Tivaware template
-This is a sample project for Texas Instrument Tivaware based on original work by Mauro Scomparin (@scompo).
+# Rust on Cortex-M4
+
+This project implements a blinking LED on a Texas Instrument Tiva C microcontroller.
+
+Full tutorial coming soon.
+
 
 To compile :
 
