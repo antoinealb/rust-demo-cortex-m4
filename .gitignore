@@ -30,3 +30,6 @@
 
 # Editor files
 *.swp
+
+# Libcore
+libcore-thumbv7m
