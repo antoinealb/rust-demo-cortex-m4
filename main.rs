@@ -28,7 +28,7 @@ fn handler() -> () {
 #[no_mangle] pub fn main()
 {
     clock_init();
-    led_driver::led_init();
+    led_driver::init();
     systick::init();
 
     systick::set_period_us(10 * 1000);
