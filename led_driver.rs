@@ -1,24 +1,20 @@
 use sysctl;
 use gpio;
+use gpio::Pin;
 
-pub const RED: u32 = gpio::PIN1;
-pub const BLUE: u32 = gpio::PIN2;
-pub const GREEN: u32 = gpio::PIN3;
+pub const RED: Pin = Pin::Pin1;
+pub const BLUE: Pin = Pin::Pin2;
 
-
-pub fn led_init()
-{
+pub fn led_init() {
     sysctl::peripheral_enable(sysctl::SYSCTL_PERIPH_GPIOF);
-    gpio::make_output(gpio::PORTF_BASE, RED + BLUE + GREEN);
+    gpio::make_output(gpio::Port::PortF, RED);
+    gpio::make_output(gpio::Port::PortF, BLUE);
 }
 
 pub fn set_red(state: bool) {
-    let value = if state { RED } else { 0 };
-    gpio::write(gpio::PORTF_BASE, RED, value);
+    gpio::write(gpio::Port::PortF, RED, state);
 }
 
 pub fn set_blue(state: bool) {
-    let value = if state { BLUE } else { 0 };
-    gpio::write(gpio::PORTF_BASE, BLUE, value);
+    gpio::write(gpio::Port::PortF, BLUE, state);
 }
-
