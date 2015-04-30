@@ -85,7 +85,7 @@ LIBM_PATH=${shell ${CC} ${CFLAGS} -print-file-name=libm.a}
 # I used this project: https://github.com/utzig/lm4tools
 FLASHER=lm4tools/lm4flash/lm4flash
 # Flags for the uploader program.
-FLASHER_FLAGS=
+FLASHER_FLAGS= -v
 
 #==============================================================================
 #                         Project properties
