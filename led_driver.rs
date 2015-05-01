@@ -8,7 +8,7 @@ pub const BLUE: Pin = Pin::Pin2;
 
 
 pub fn init() {
-    sysctl::peripheral_enable(sysctl::SYSCTL_PERIPH_GPIOF);
+    sysctl::peripheral_enable(sysctl::Peripheral::GPIOF);
     gpio::make_output(gpio::Port::PortF, RED);
     gpio::make_output(gpio::Port::PortF, BLUE);
 }

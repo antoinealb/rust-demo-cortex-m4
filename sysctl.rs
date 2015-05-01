@@ -1,5 +1,6 @@
 
 #![allow(dead_code)]
+#![allow(overflowing_literals)]
 
 extern crate core;
 
@@ -13,83 +14,85 @@ extern crate core;
 // is 3) can only be used with the SysCtlPeripheralPresent() API.
 //
 //*****************************************************************************
-pub const SYSCTL_PERIPH_ADC0      : u32 = 0xf0003800;  // ADC 0
-pub const SYSCTL_PERIPH_ADC1      : u32 = 0xf0003801;  // ADC 1
-pub const SYSCTL_PERIPH_CAN0      : u32 = 0xf0003400;  // CAN 0
-pub const SYSCTL_PERIPH_CAN1      : u32 = 0xf0003401;  // CAN 1
-pub const SYSCTL_PERIPH_COMP0     : u32 = 0xf0003c00;  // Analog Comparator Module 0
-pub const SYSCTL_PERIPH_EMAC0     : u32 = 0xf0009c00;  // Ethernet MAC0
-pub const SYSCTL_PERIPH_EPHY0     : u32 = 0xf0003000;  // Ethernet PHY0
-pub const SYSCTL_PERIPH_EPI0      : u32 = 0xf0001000;  // EPI0
-pub const SYSCTL_PERIPH_GPIOA     : u32 = 0xf0000800;  // GPIO A
-pub const SYSCTL_PERIPH_GPIOB     : u32 = 0xf0000801;  // GPIO B
-pub const SYSCTL_PERIPH_GPIOC     : u32 = 0xf0000802;  // GPIO C
-pub const SYSCTL_PERIPH_GPIOD     : u32 = 0xf0000803;  // GPIO D
-pub const SYSCTL_PERIPH_GPIOE     : u32 = 0xf0000804;  // GPIO E
-pub const SYSCTL_PERIPH_GPIOF     : u32 = 0xf0000805;  // GPIO F
-pub const SYSCTL_PERIPH_GPIOG     : u32 = 0xf0000806;  // GPIO G
-pub const SYSCTL_PERIPH_GPIOH     : u32 = 0xf0000807;  // GPIO H
-pub const SYSCTL_PERIPH_GPIOJ     : u32 = 0xf0000808;  // GPIO J
-pub const SYSCTL_PERIPH_HIBERNATE : u32 = 0xf0001400;  // Hibernation module
-pub const SYSCTL_PERIPH_CCM0      : u32 = 0xf0007400;  // CCM 0
-pub const SYSCTL_PERIPH_EEPROM0   : u32 = 0xf0005800;  // EEPROM 0
-pub const SYSCTL_PERIPH_FAN0      : u32 = 0xf0005400;  // FAN 0
-pub const SYSCTL_PERIPH_FAN1      : u32 = 0xf0005401;  // FAN 1
-pub const SYSCTL_PERIPH_GPIOK     : u32 = 0xf0000809;  // GPIO K
-pub const SYSCTL_PERIPH_GPIOL     : u32 = 0xf000080a;  // GPIO L
-pub const SYSCTL_PERIPH_GPIOM     : u32 = 0xf000080b;  // GPIO M
-pub const SYSCTL_PERIPH_GPION     : u32 = 0xf000080c;  // GPIO N
-pub const SYSCTL_PERIPH_GPIOP     : u32 = 0xf000080d;  // GPIO P
-pub const SYSCTL_PERIPH_GPIOQ     : u32 = 0xf000080e;  // GPIO Q
-pub const SYSCTL_PERIPH_GPIOR     : u32 = 0xf000080f;  // GPIO R
-pub const SYSCTL_PERIPH_GPIOS     : u32 = 0xf0000810;  // GPIO S
-pub const SYSCTL_PERIPH_GPIOT     : u32 = 0xf0000811;  // GPIO T
-pub const SYSCTL_PERIPH_I2C0      : u32 = 0xf0002000;  // I2C 0
-pub const SYSCTL_PERIPH_I2C1      : u32 = 0xf0002001;  // I2C 1
-pub const SYSCTL_PERIPH_I2C2      : u32 = 0xf0002002;  // I2C 2
-pub const SYSCTL_PERIPH_I2C3      : u32 = 0xf0002003;  // I2C 3
-pub const SYSCTL_PERIPH_I2C4      : u32 = 0xf0002004;  // I2C 4
-pub const SYSCTL_PERIPH_I2C5      : u32 = 0xf0002005;  // I2C 5
-pub const SYSCTL_PERIPH_I2C6      : u32 = 0xf0002006;  // I2C 6
-pub const SYSCTL_PERIPH_I2C7      : u32 = 0xf0002007;  // I2C 7
-pub const SYSCTL_PERIPH_I2C8      : u32 = 0xf0002008;  // I2C 8
-pub const SYSCTL_PERIPH_I2C9      : u32 = 0xf0002009;  // I2C 9
-pub const SYSCTL_PERIPH_LCD0      : u32 = 0xf0009000;  // LCD 0
-pub const SYSCTL_PERIPH_ONEWIRE0  : u32 = 0xf0009800;  // One Wire 0
-pub const SYSCTL_PERIPH_PWM0      : u32 = 0xf0004000;  // PWM 0
-pub const SYSCTL_PERIPH_PWM1      : u32 = 0xf0004001;  // PWM 1
-pub const SYSCTL_PERIPH_QEI0      : u32 = 0xf0004400;  // QEI 0
-pub const SYSCTL_PERIPH_QEI1      : u32 = 0xf0004401;  // QEI 1
-pub const SYSCTL_PERIPH_SSI0      : u32 = 0xf0001c00;  // SSI 0
-pub const SYSCTL_PERIPH_SSI1      : u32 = 0xf0001c01;  // SSI 1
-pub const SYSCTL_PERIPH_SSI2      : u32 = 0xf0001c02;  // SSI 2
-pub const SYSCTL_PERIPH_SSI3      : u32 = 0xf0001c03;  // SSI 3
-pub const SYSCTL_PERIPH_TIMER0    : u32 = 0xf0000400;  // Timer 0
-pub const SYSCTL_PERIPH_TIMER1    : u32 = 0xf0000401;  // Timer 1
-pub const SYSCTL_PERIPH_TIMER2    : u32 = 0xf0000402;  // Timer 2
-pub const SYSCTL_PERIPH_TIMER3    : u32 = 0xf0000403;  // Timer 3
-pub const SYSCTL_PERIPH_TIMER4    : u32 = 0xf0000404;  // Timer 4
-pub const SYSCTL_PERIPH_TIMER5    : u32 = 0xf0000405;  // Timer 5
-pub const SYSCTL_PERIPH_TIMER6    : u32 = 0xf0000406;  // Timer 6
-pub const SYSCTL_PERIPH_TIMER7    : u32 = 0xf0000407;  // Timer 7
-pub const SYSCTL_PERIPH_UART0     : u32 = 0xf0001800;  // UART 0
-pub const SYSCTL_PERIPH_UART1     : u32 = 0xf0001801;  // UART 1
-pub const SYSCTL_PERIPH_UART2     : u32 = 0xf0001802;  // UART 2
-pub const SYSCTL_PERIPH_UART3     : u32 = 0xf0001803;  // UART 3
-pub const SYSCTL_PERIPH_UART4     : u32 = 0xf0001804;  // UART 4
-pub const SYSCTL_PERIPH_UART5     : u32 = 0xf0001805;  // UART 5
-pub const SYSCTL_PERIPH_UART6     : u32 = 0xf0001806;  // UART 6
-pub const SYSCTL_PERIPH_UART7     : u32 = 0xf0001807;  // UART 7
-pub const SYSCTL_PERIPH_UDMA      : u32 = 0xf0000c00;  // uDMA
-pub const SYSCTL_PERIPH_USB0      : u32 = 0xf0002800;  // USB 0
-pub const SYSCTL_PERIPH_WDOG0     : u32 = 0xf0000000;  // Watchdog 0
-pub const SYSCTL_PERIPH_WDOG1     : u32 = 0xf0000001;  // Watchdog 1
-pub const SYSCTL_PERIPH_WTIMER0   : u32 = 0xf0005c00;  // Wide Timer 0
-pub const SYSCTL_PERIPH_WTIMER1   : u32 = 0xf0005c01;  // Wide Timer 1
-pub const SYSCTL_PERIPH_WTIMER2   : u32 = 0xf0005c02;  // Wide Timer 2
-pub const SYSCTL_PERIPH_WTIMER3   : u32 = 0xf0005c03;  // Wide Timer 3
-pub const SYSCTL_PERIPH_WTIMER4   : u32 = 0xf0005c04;  // Wide Timer 4
-pub const SYSCTL_PERIPH_WTIMER5   : u32 = 0xf0005c05;  // Wide Timer 5
+pub enum Peripheral {
+    ADC0      = 0xf0003800,  // ADC 0
+    ADC1      = 0xf0003801,  // ADC 1
+    CAN0      = 0xf0003400,  // CAN 0
+    CAN1      = 0xf0003401,  // CAN 1
+    COMP0     = 0xf0003c00,  // Analog Comparator Module 0
+    EMAC0     = 0xf0009c00,  // Ethernet MAC0
+    EPHY0     = 0xf0003000,  // Ethernet PHY0
+    EPI0      = 0xf0001000,  // EPI0
+    GPIOA     = 0xf0000800,  // GPIO A
+    GPIOB     = 0xf0000801,  // GPIO B
+    GPIOC     = 0xf0000802,  // GPIO C
+    GPIOD     = 0xf0000803,  // GPIO D
+    GPIOE     = 0xf0000804,  // GPIO E
+    GPIOF     = 0xf0000805,  // GPIO F
+    GPIOG     = 0xf0000806,  // GPIO G
+    GPIOH     = 0xf0000807,  // GPIO H
+    GPIOJ     = 0xf0000808,  // GPIO J
+    HIBERNATE = 0xf0001400,  // Hibernation module
+    CCM0      = 0xf0007400,  // CCM 0
+    EEPROM0   = 0xf0005800,  // EEPROM 0
+    FAN0      = 0xf0005400,  // FAN 0
+    FAN1      = 0xf0005401,  // FAN 1
+    GPIOK     = 0xf0000809,  // GPIO K
+    GPIOL     = 0xf000080a,  // GPIO L
+    GPIOM     = 0xf000080b,  // GPIO M
+    GPION     = 0xf000080c,  // GPIO N
+    GPIOP     = 0xf000080d,  // GPIO P
+    GPIOQ     = 0xf000080e,  // GPIO Q
+    GPIOR     = 0xf000080f,  // GPIO R
+    GPIOS     = 0xf0000810,  // GPIO S
+    GPIOT     = 0xf0000811,  // GPIO T
+    I2C0      = 0xf0002000,  // I2C 0
+    I2C1      = 0xf0002001,  // I2C 1
+    I2C2      = 0xf0002002,  // I2C 2
+    I2C3      = 0xf0002003,  // I2C 3
+    I2C4      = 0xf0002004,  // I2C 4
+    I2C5      = 0xf0002005,  // I2C 5
+    I2C6      = 0xf0002006,  // I2C 6
+    I2C7      = 0xf0002007,  // I2C 7
+    I2C8      = 0xf0002008,  // I2C 8
+    I2C9      = 0xf0002009,  // I2C 9
+    LCD0      = 0xf0009000,  // LCD 0
+    ONEWIRE0  = 0xf0009800,  // One Wire 0
+    PWM0      = 0xf0004000,  // PWM 0
+    PWM1      = 0xf0004001,  // PWM 1
+    QEI0      = 0xf0004400,  // QEI 0
+    QEI1      = 0xf0004401,  // QEI 1
+    SSI0      = 0xf0001c00,  // SSI 0
+    SSI1      = 0xf0001c01,  // SSI 1
+    SSI2      = 0xf0001c02,  // SSI 2
+    SSI3      = 0xf0001c03,  // SSI 3
+    TIMER0    = 0xf0000400,  // Timer 0
+    TIMER1    = 0xf0000401,  // Timer 1
+    TIMER2    = 0xf0000402,  // Timer 2
+    TIMER3    = 0xf0000403,  // Timer 3
+    TIMER4    = 0xf0000404,  // Timer 4
+    TIMER5    = 0xf0000405,  // Timer 5
+    TIMER6    = 0xf0000406,  // Timer 6
+    TIMER7    = 0xf0000407,  // Timer 7
+    UART0     = 0xf0001800,  // UART 0
+    UART1     = 0xf0001801,  // UART 1
+    UART2     = 0xf0001802,  // UART 2
+    UART3     = 0xf0001803,  // UART 3
+    UART4     = 0xf0001804,  // UART 4
+    UART5     = 0xf0001805,  // UART 5
+    UART6     = 0xf0001806,  // UART 6
+    UART7     = 0xf0001807,  // UART 7
+    UDMA      = 0xf0000c00,  // uDMA
+    USB0      = 0xf0002800,  // USB 0
+    WDOG0     = 0xf0000000,  // Watchdog 0
+    WDOG1     = 0xf0000001,  // Watchdog 1
+    WTIMER0   = 0xf0005c00,  // Wide Timer 0
+    WTIMER1   = 0xf0005c01,  // Wide Timer 1
+    WTIMER2   = 0xf0005c02,  // Wide Timer 2
+    WTIMER3   = 0xf0005c03,  // Wide Timer 3
+    WTIMER4   = 0xf0005c04,  // Wide Timer 4
+    WTIMER5   = 0xf0005c05,  // Wide Timer 5
+}
 
 //*****************************************************************************
 //
@@ -530,10 +533,10 @@ pub fn clock_set(config: u32)
     }
 }
 
-pub fn peripheral_enable(peripheral: u32)
+pub fn peripheral_enable(peripheral: Peripheral)
 {
     unsafe {
-        SysCtlPeripheralEnable(peripheral);
+        SysCtlPeripheralEnable(peripheral as u32);
     }
 }
 
