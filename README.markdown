@@ -4,6 +4,9 @@ This project implements a blinking LED on a Texas Instrument Tiva C microcontrol
 
 Full tutorial coming soon.
 
+To compile rust libraries (only needed once):
+    make libs
+
 
 To compile :
 

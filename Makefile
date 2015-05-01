@@ -62,7 +62,9 @@ CFLAGS=-mthumb ${CPU} ${FPU} -O0 -ffunction-sections -fdata-sections -MD -std=c9
 CFLAGS+= -I ${STELLARISWARE_PATH} -DPART_$(PART) -c -DTARGET_IS_BLIZZARD_RA1
 
 RUSTFLAGS = -C opt-level=2 -Z no-landing-pads
-RUSTFLAGS+= --target thumbv7em-none-eabi -g --emit obj -L libcore-thumbv7m
+RUSTFLAGS+= --target thumbv7em-none-eabi -g --emit obj
+RUSTFLAGS+= -L libcore-thumbv7m
+RUSTFLAGS+= -L librustc_bitflags-thumbv7m
 
 # Flags for LD
 LFLAGS  = --gc-sections
@@ -121,6 +123,13 @@ main.o: *.rs
 	@echo
 	@echo Compiling $<...
 	$(RUSTC) $(RUSTFLAGS) -o ${@} ${<}
+
+libs:
+	rm -rf libcore-thumbv7m librustc_bitflags-thumbv7m
+	mkdir libcore-thumbv7m librustc_bitflags-thumbv7m
+	rustc -C opt-level=2 -Z no-landing-pads --target thumbv7em-none-eabi -g rust/src/libcore//lib.rs --out-dir libcore-thumbv7m
+	rustc -C opt-level=2 -Z no-landing-pads --target thumbv7em-none-eabi -g rust/src/librustc_bitflags/lib.rs   --out-dir librustc_bitflags-thumbv7m -L libcore-thumbv7m/
+
 
 ${PROJECT_NAME}.axf: $(OBJS)
 	@echo
