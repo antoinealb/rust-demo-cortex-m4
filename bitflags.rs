@@ -10,6 +10,7 @@
 
 //! A typesafe bitmask flag generator.
 
+#![macro_use]
 #![cfg_attr(test, feature(hash))]
 
 /// The `bitflags!` macro generates a `struct` that holds a set of C-style
@@ -156,11 +157,11 @@ macro_rules! bitflags {
             /// Convert from underlying bit representation, unless that
             /// representation contains bits that do not correspond to a flag.
             #[inline]
-            pub fn from_bits(bits: $T) -> ::std::option::Option<$BitFlags> {
+            pub fn from_bits(bits: $T) -> ::core::option::Option<$BitFlags> {
                 if (bits & !$BitFlags::all().bits()) != 0 {
-                    ::std::option::Option::None
+                    ::core::option::Option::None
                 } else {
-                    ::std::option::Option::Some($BitFlags { bits: bits })
+                    ::core::option::Option::Some($BitFlags { bits: bits })
                 }
             }
 
@@ -214,7 +215,7 @@ macro_rules! bitflags {
             }
         }
 
-        impl ::std::ops::BitOr for $BitFlags {
+        impl ::core::ops::BitOr for $BitFlags {
             type Output = $BitFlags;
 
             /// Returns the union of the two sets of flags.
@@ -224,7 +225,7 @@ macro_rules! bitflags {
             }
         }
 
-        impl ::std::ops::BitXor for $BitFlags {
+        impl ::core::ops::BitXor for $BitFlags {
             type Output = $BitFlags;
 
             /// Returns the left flags, but with all the right flags toggled.
@@ -234,7 +235,7 @@ macro_rules! bitflags {
             }
         }
 
-        impl ::std::ops::BitAnd for $BitFlags {
+        impl ::core::ops::BitAnd for $BitFlags {
             type Output = $BitFlags;
 
             /// Returns the intersection between the two sets of flags.
@@ -244,7 +245,7 @@ macro_rules! bitflags {
             }
         }
 
-        impl ::std::ops::Sub for $BitFlags {
+        impl ::core::ops::Sub for $BitFlags {
             type Output = $BitFlags;
 
             /// Returns the set difference of the two sets of flags.
@@ -254,7 +255,7 @@ macro_rules! bitflags {
             }
         }
 
-        impl ::std::ops::Not for $BitFlags {
+        impl ::core::ops::Not for $BitFlags {
             type Output = $BitFlags;
 
             /// Returns the complement of this set of flags.
