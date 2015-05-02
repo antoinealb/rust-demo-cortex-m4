@@ -7,6 +7,7 @@
 
 extern crate core;
 
+mod bitflags;
 mod runtime;
 mod sysctl;
 mod led_driver;

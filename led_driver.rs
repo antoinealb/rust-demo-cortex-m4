@@ -3,8 +3,8 @@ use sysctl;
 use gpio;
 use gpio::Pin;
 
-pub const RED: Pin = Pin::Pin1;
-pub const BLUE: Pin = Pin::Pin2;
+pub const RED: Pin = gpio::PIN1;
+pub const BLUE: Pin = gpio::PIN2;
 
 
 pub fn init() {
