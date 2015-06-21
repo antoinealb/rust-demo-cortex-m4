@@ -242,6 +242,11 @@ void(* myvectors[])(void) = {
  * 0 to the .bss segment
  */
 
+float c_float_test(float x) {
+    (x);
+    return x * x / 2.;
+}
+
 void rst_handler(void){
     // Copy the .data section pointers to ram from flash.
     // Look at LD manual (Optional Section Attributes).
@@ -268,6 +273,11 @@ void rst_handler(void){
     while(dest < &_end_bss){
         *dest++ = 0;
     }
+
+
+    /* Test floating point calling conventions from C to Rust. */
+    rust_float_test(3.);
+    c_float_test(3.);
 
     // after setting copying .data to ram and "zero-ing" .bss we are good
     // to start the main() method!

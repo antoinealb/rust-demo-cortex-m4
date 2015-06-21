@@ -23,6 +23,10 @@ fn clock_init() {
 fn handler() {
 }
 
+#[no_mangle]
+pub fn rust_float_test(x: f32) -> f32 {
+    x * x / 2f32
+}
 
 #[no_mangle] pub fn main()
 {
