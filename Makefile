@@ -40,7 +40,7 @@ PREFIX_ARM = arm-none-eabi
 # Microcontroller properties.
 PART=LM4F120H5QR
 CPU=-mcpu=cortex-m4
-FPU=-mfpu=fpv4-sp-d16 -mfloat-abi=softfp
+FPU=-mfpu=fpv4-sp-d16 -mfloat-abi=hard
 
 # Stellarisware path
 STELLARISWARE_PATH=tivaware
@@ -62,7 +62,7 @@ CFLAGS=-mthumb ${CPU} ${FPU} -O0 -ffunction-sections -fdata-sections -MD -std=c9
 CFLAGS+= -I ${STELLARISWARE_PATH} -DPART_$(PART) -c -DTARGET_IS_BLIZZARD_RA1
 
 RUSTFLAGS = -C opt-level=2 -Z no-landing-pads
-RUSTFLAGS+= --target thumbv7em-none-eabi -g --emit obj
+RUSTFLAGS+= --target thumbv7em-none-eabihf -g --emit obj
 RUSTFLAGS+= -L libcore-thumbv7m
 RUSTFLAGS+= -L librustc_bitflags-thumbv7m
 
@@ -127,8 +127,8 @@ main.o: *.rs
 libs:
 	rm -rf libcore-thumbv7m librustc_bitflags-thumbv7m
 	mkdir libcore-thumbv7m librustc_bitflags-thumbv7m
-	rustc -C opt-level=2 -Z no-landing-pads --target thumbv7em-none-eabi -g rust/src/libcore//lib.rs --out-dir libcore-thumbv7m
-	rustc -C opt-level=2 -Z no-landing-pads --target thumbv7em-none-eabi -g rust/src/librustc_bitflags/lib.rs   --out-dir librustc_bitflags-thumbv7m -L libcore-thumbv7m/
+	rustc -C opt-level=2 -Z no-landing-pads --target thumbv7em-none-eabihf -g rust/src/libcore//lib.rs --out-dir libcore-thumbv7m
+	rustc -C opt-level=2 -Z no-landing-pads --target thumbv7em-none-eabihf -g rust/src/librustc_bitflags/lib.rs   --out-dir librustc_bitflags-thumbv7m -L libcore-thumbv7m/
 
 
 ${PROJECT_NAME}.axf: $(OBJS)
