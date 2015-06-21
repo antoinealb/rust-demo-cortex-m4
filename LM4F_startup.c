@@ -254,6 +254,9 @@ void rst_handler(void){
 	src = &_end_text;
 	dest = &_start_data;
 
+    FPUEnable();
+    FPULazyStackingEnable();
+
 	//this too
     while(dest < &_end_data)
     {
