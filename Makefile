@@ -151,6 +151,7 @@ ${PROJECT_NAME}: ${PROJECT_NAME}.axf
 clean:
 	rm *.bin *.o *.d *.axf *.lst
 
-# Rule to load the project to the board
-load:
-	${FLASHER} ${PROJECT_NAME}.bin ${FLASHER_FLAGS}
+.PHONY: flash
+flash: main.axf
+	openocd -f oocd.cfg -c "program main.axf verify reset" -c "shutdown"
+
