@@ -7,3 +7,6 @@
 [submodule "lm4tools"]
 	path = lm4tools
 	url = https://github.com/utzig/lm4tools/
+[submodule "ChibiOS"]
+	path = ChibiOS
+	url = https://github.com/cvra/ChibiOS.git

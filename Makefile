@@ -1,157 +1,187 @@
-# Copyright (c) 2012, Mauro Scomparin
-# All rights reserved.
+##############################################################################
+# Build global options
 #
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#     * Redistributions of source code must retain the above copyright
-#       notice, this list of conditions and the following disclaimer.
-#     * Redistributions in binary form must reproduce the above copyright
-#       notice, this list of conditions and the following disclaimer in the
-#       documentation and/or other materials provided with the distribution.
-#     * Neither the name of Mauro Scomparin nor the
-#       names of its contributors may be used to endorse or promote products
-#       derived from this software without specific prior written permission.
+
+# Compiler options here.
+USE_OPT = -Os -ggdb -fomit-frame-pointer -falign-functions=16
+
+# C specific options here (added to USE_OPT).
+USE_COPT =
+
+# C++ specific options here (added to USE_OPT).
+USE_CPPOPT = -fno-rtti
+
+# Enable this if you want the linker to remove unused code and data
+USE_LINK_GC = yes
+
+# Linker extra options here.
+USE_LDOPT =
+
+# Enable this if you want link time optimizations (LTO)
+USE_LTO = no
+
+# If enabled, this option allows to compile the application in THUMB mode.
+USE_THUMB = yes
+
+# Enable this if you want to see the full log while compiling.
+ifeq ($(USE_VERBOSE_COMPILE),)
+  USE_VERBOSE_COMPILE = no
+endif
+
+# If enabled, this option makes the build process faster by not compiling
+# modules not used in the current configuration.
+USE_SMART_BUILD = no
+
 #
-# THIS SOFTWARE IS PROVIDED BY Mauro Scomparin ``AS IS'' AND ANY
-# EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-# DISCLAIMED. IN NO EVENT SHALL Mauro Scomparin BE LIABLE FOR ANY
-# DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# Build global options
+##############################################################################
+
+##############################################################################
+# Architecture or project specific options
 #
-# File:			Makefile.
-# Author:		Mauro Scomparin <http://scompoprojects.worpress.com>.
-# Version:		1.0.0.
-# Description:	Sample makefile.
 
-#==============================================================================
-#           Cross compiling toolchain / tools specifications
-#==============================================================================
+# Stack size to be allocated to the Cortex-M process stack. This stack is
+# the stack used by the main() thread.
 
-# Prefix for the arm-eabi-none toolchain.
-# I'm using codesourcery g++ lite compilers available here:
-# http://www.mentor.com/embedded-software/sourcery-tools/sourcery-codebench/editions/lite-edition/
-PREFIX_ARM = arm-none-eabi
+USE_PROCESS_STACKSIZE = 0x400
 
-# Microcontroller properties.
-PART=LM4F120H5QR
-CPU=-mcpu=cortex-m4
-FPU=-mfpu=fpv4-sp-d16 -mfloat-abi=softfp
+# Stack size to the allocated to the Cortex-M main/exceptions stack. This
+# stack is used for processing interrupts and exceptions.
+USE_EXCEPTIONS_STACKSIZE = 0x400
 
-# Stellarisware path
-STELLARISWARE_PATH=tivaware
+# Enables the use of FPU on Cortex-M4 (no, softfp, hard).
+USE_FPU = hard
 
-# Program name definition for ARM GNU C compiler.
-CC      = ${PREFIX_ARM}-gcc
-# Program name definition for Rust compiler
-RUSTC   = rustc
-# Program name definition for ARM GNU Linker.
-LD      = ${PREFIX_ARM}-ld
-# Program name definition for ARM GNU Object copy.
-CP      = ${PREFIX_ARM}-objcopy
-# Program name definition for ARM GNU Object dump.
-OD      = ${PREFIX_ARM}-objdump
+#
+# Architecture or project specific options
+##############################################################################
 
-# Option arguments for C compiler.
-CFLAGS=-mthumb ${CPU} ${FPU} -O0 -ffunction-sections -fdata-sections -MD -std=c99 -Wall -pedantic -c -g
-# Library stuff passed as flags!
-CFLAGS+= -I ${STELLARISWARE_PATH} -DPART_$(PART) -c -DTARGET_IS_BLIZZARD_RA1
+##############################################################################
+# Project, sources and paths
+#
+
+# Define project name here
+PROJECT = ch
+
+# Imported source files and paths
+CHIBIOS = ChibiOS
+# Startup files.
+include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/startup_stm32f4xx.mk
+# HAL-OSAL files (optional).
+include $(CHIBIOS)/os/hal/hal.mk
+include $(CHIBIOS)/os/hal/ports/STM32/STM32F4xx/platform.mk
+include $(CHIBIOS)/os/hal/osal/rt/osal.mk
+# RTOS files (optional).
+include $(CHIBIOS)/os/rt/rt.mk
+include $(CHIBIOS)/os/rt/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
+# Other files (optional).
+include $(CHIBIOS)/test/rt/test.mk
+
+# Define linker script file here
+LDSCRIPT= STM32F407xG.ld
+
+# C sources that can be compiled in ARM or THUMB mode depending on the global
+# setting.
+CSRC = $(STARTUPSRC) \
+       $(KERNSRC) \
+       $(PORTSRC) \
+       $(OSALSRC) \
+       $(HALSRC) \
+       $(PLATFORMSRC) \
+       $(BOARDSRC) \
+       $(TESTSRC) \
+       main.c board.c syscalls.c
+
+# C++ sources that can be compiled in ARM or THUMB mode depending on the global
+# setting.
+CPPSRC =
+
+RUSTSRC = hello.rs
+
+# List ASM source files here
+ASMSRC = $(STARTUPASM) $(PORTASM) $(OSALASM)
+
+INCDIR = $(STARTUPINC) $(KERNINC) $(PORTINC) $(OSALINC) \
+         $(HALINC) $(PLATFORMINC) $(BOARDINC) $(TESTINC) \
+         $(CHIBIOS)/os/various src
+
+#
+# Project, sources and paths
+##############################################################################
+
+##############################################################################
+# Compiler settings
+#
 
 RUSTFLAGS = -C opt-level=2 -Z no-landing-pads
-RUSTFLAGS+= --target thumbv7em-none-eabi -g --emit obj
-RUSTFLAGS+= -L libcore-thumbv7m
-RUSTFLAGS+= -L librustc_bitflags-thumbv7m
+RUSTFLAGS += --target thumbv7em-none-eabi -g --emit obj
+RUSTFLAGS += -L libcore-thumbv7m
+RUSTFLAGS += -L librustc_bitflags-thumbv7m
 
-# Flags for LD
-LFLAGS  = --gc-sections
+MCU  = cortex-m4
 
-# Flags for objcopy
-CPFLAGS = -Obinary
+#TRGT = arm-elf-
+TRGT = arm-none-eabi-
+CC   = $(TRGT)gcc
+CPPC = $(TRGT)g++
+# Enable loading with g++ only if you need C++ runtime support.
+# NOTE: You can use C++ even without C++ support if you are careful. C++
+#       runtime support makes code size explode.
+LD   = $(TRGT)gcc
+#LD   = $(TRGT)g++
+CP   = $(TRGT)objcopy
+AS   = $(TRGT)gcc -x assembler-with-cpp
+AR   = $(TRGT)ar
+OD   = $(TRGT)objdump
+SZ   = $(TRGT)size
+HEX  = $(CP) -O ihex
+BIN  = $(CP) -O binary
 
-# flags for objectdump
-ODFLAGS = -S
+RUSTC = rustc
 
-# I want to save the path to libgcc, libc.a and libm.a for linking.
-# I can get them from the gcc frontend, using some options.
-# See gcc documentation
-LIB_GCC_PATH=${shell ${CC} ${CFLAGS} -print-libgcc-file-name}
-LIBC_PATH=${shell ${CC} ${CFLAGS} -print-file-name=libc.a}
-LIBM_PATH=${shell ${CC} ${CFLAGS} -print-file-name=libm.a}
+# ARM-specific options here
+AOPT =
 
-# Uploader tool path.
-# Set a relative or absolute path to the upload tool program.
-# I used this project: https://github.com/utzig/lm4tools
-FLASHER=lm4tools/lm4flash/lm4flash
-# Flags for the uploader program.
-FLASHER_FLAGS= -v
+# THUMB-specific options here
+TOPT = -mthumb -DTHUMB
 
-#==============================================================================
-#                         Project properties
-#==============================================================================
+# Define C warning options here
+CWARN = -Wall -Wextra -Wundef -Wstrict-prototypes
 
-# Project name (W/O .c extension eg. "main")
-PROJECT_NAME = main
-# Startup file name (W/O .c extension eg. "LM4F_startup")
-STARTUP_FILE = LM4F_startup
-# Linker file name
-LINKER_FILE = LM4F.ld
+# Define C++ warning options here
+CPPWARN = -Wall -Wextra -Wundef
 
-SRC = LM4F_startup.c
-RUSTSRC = main.rs
+#
+# Compiler settings
+##############################################################################
 
-OBJS = $(SRC:.c=.o)
-OBJS += $(RUSTSRC:.rs=.o)
+##############################################################################
+# Start of user section
+#
 
-#==============================================================================
-#                      Rules to make the target
-#==============================================================================
+# List all user C define here, like -D_DEBUG=1
+UDEFS =
 
-#make all rule
-all: $(OBJS) ${PROJECT_NAME}.axf ${PROJECT_NAME}
-main.o: *.rs
+# Define ASM defines here
+UADEFS =
 
-%.o: %.c
-	@echo
-	@echo Compiling $<...
-	$(CC) -c $(CFLAGS) ${<} -o ${@}
+# List all user directories here
+UINCDIR =
 
-%.o: %.rs
-	@echo
-	@echo Compiling $<...
-	$(RUSTC) $(RUSTFLAGS) -o ${@} ${<}
+# List the user directory to look for the libraries here
+ULIBDIR =
 
-libs:
-	rm -rf libcore-thumbv7m librustc_bitflags-thumbv7m
-	mkdir libcore-thumbv7m librustc_bitflags-thumbv7m
-	rustc -C opt-level=2 -Z no-landing-pads --target thumbv7em-none-eabi -g rust/src/libcore//lib.rs --out-dir libcore-thumbv7m
-	rustc -C opt-level=2 -Z no-landing-pads --target thumbv7em-none-eabi -g rust/src/librustc_bitflags/lib.rs   --out-dir librustc_bitflags-thumbv7m -L libcore-thumbv7m/
+# List all user libraries here
+ULIBS =
 
+#
+# End of user defines
+##############################################################################
 
-${PROJECT_NAME}.axf: $(OBJS)
-	@echo
-	@echo Making driverlib
-	$(MAKE) -C ${STELLARISWARE_PATH}/driverlib/
-	@echo
-	@echo Linking...
-	$(LD) -T $(LINKER_FILE) $(LFLAGS) -o ${PROJECT_NAME}.axf $(OBJS) ${STELLARISWARE_PATH}/driverlib/gcc/libdriver.a
-
-${PROJECT_NAME}: ${PROJECT_NAME}.axf
-	@echo
-	@echo Copying...
-	$(CP) $(CPFLAGS) ${PROJECT_NAME}.axf ${PROJECT_NAME}.bin
-	@echo
-	@echo Creating list file...
-	$(OD) $(ODFLAGS) ${PROJECT_NAME}.axf > ${PROJECT_NAME}.lst
-
-# make clean rule
-clean:
-	rm *.bin *.o *.d *.axf *.lst
+# RULESPATH = $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC
+RULESPATH = .
+include $(RULESPATH)/rules.mk
 
 .PHONY: flash
-flash: main.axf
-	openocd -f oocd.cfg -c "program main.axf verify reset" -c "shutdown"
-
+flash: build/$(PROJECT).elf
+	openocd -f oocd.cfg -c "program build/ch.elf verify reset" -c "shutdown"
