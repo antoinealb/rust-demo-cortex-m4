@@ -13,9 +13,9 @@ To compile :
 
     make
 
-To send to board using l4mftools :
+To send to board using OpenOCD :
 
-    make load
+    make flash
 
 ## Hardfloat ABI
 There is a second branch using the hardfloat ABI. See issue #1 for discussion
